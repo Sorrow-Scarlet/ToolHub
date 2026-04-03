@@ -8,6 +8,5 @@ public class User
     public string PasswordHash { get; set; }
     public string Salt { get; set; }
     public int Age { get; set; }
-    public static User CurrentUser { get; set; }
     public ConsoleColor FavoriteColor { get; set; } = ConsoleColor.White;
 }

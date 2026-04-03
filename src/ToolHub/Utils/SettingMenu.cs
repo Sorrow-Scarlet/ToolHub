@@ -39,17 +39,27 @@ public class SettingsMenu
 
     private static void ShowProfile()
     {
+        if (AccountManager.CurrentUser == null)
+        {
+            Console.WriteLine("No user logged in. Please log in first.");
+            return;
+        }
         Console.Clear();
         Console.WriteLine("--- User Profile ---");
-        Console.WriteLine($"Username: {User.CurrentUser.Username}");
-        Console.WriteLine($"Email:    {User.CurrentUser.Email}");
-        Console.WriteLine($"User ID:  {User.CurrentUser.UserID}");
+        Console.WriteLine($"Username: {AccountManager.CurrentUser.Username}");
+        Console.WriteLine($"Email:    {AccountManager.CurrentUser.Email}");
+        Console.WriteLine($"User ID:  {AccountManager.CurrentUser.UserID}");
         Console.WriteLine("\nPress any key to return...");
         Console.ReadKey();
     }
 
     private static void ChangeColor()
     {
+        if (AccountManager.CurrentUser == null)
+        {
+            Console.WriteLine("No user logged in. Please log in first.");
+            return;
+        }
         Console.Clear();
         Console.WriteLine("--- Choose a Theme Color ---");
         Console.WriteLine("1. Cyan");
@@ -63,19 +73,19 @@ public class SettingsMenu
         switch (choice)
         {
             case "1":
-                User.CurrentUser.FavoriteColor = ConsoleColor.Cyan;
+                AccountManager.CurrentUser.FavoriteColor = ConsoleColor.Cyan;
                 break;
             case "2":
-                User.CurrentUser.FavoriteColor = ConsoleColor.Magenta;
+                AccountManager.CurrentUser.FavoriteColor = ConsoleColor.Magenta;
                 break;
             case "3":
-                User.CurrentUser.FavoriteColor = ConsoleColor.Yellow;
+                AccountManager.CurrentUser.FavoriteColor = ConsoleColor.Yellow;
                 break;
             case "4":
-                User.CurrentUser.FavoriteColor = ConsoleColor.White;
+                AccountManager.CurrentUser.FavoriteColor = ConsoleColor.White;
                 break;
             case "5":
-                User.CurrentUser.FavoriteColor = ConsoleColor.Green;
+                AccountManager.CurrentUser.FavoriteColor = ConsoleColor.Green;
                 break;
             default:
                 Console.WriteLine("Invalid input. Please enter a number between 1 and 5.");
@@ -90,18 +100,24 @@ public class SettingsMenu
 
     private static void SaveSettings()
     {
+        if (AccountManager.CurrentUser is null)
+        {
+            Console.WriteLine("You must be logged in to change settings.");
+            return;
+        }
         string fileName = "users.json";
         if (File.Exists(fileName))
         {
             var users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText(fileName));
             if (users == null)
             {
-                throw new Exception("Failed to deserialize user data.");
+                Console.WriteLine("Failed to deserialize user data, please try again later.");
+                return;
             }
-            var user = users.FirstOrDefault(u => u.UserID == User.CurrentUser.UserID);
+            var user = users.FirstOrDefault(u => u.UserID == AccountManager.CurrentUser.UserID);
             if (user != null)
             {
-                user.FavoriteColor = User.CurrentUser.FavoriteColor;
+                user.FavoriteColor = AccountManager.CurrentUser.FavoriteColor;
                 File.WriteAllText(
                     fileName,
                     JsonSerializer.Serialize(
@@ -115,13 +131,18 @@ public class SettingsMenu
 
     private static void ChangePassword()
     {
+        if (AccountManager.CurrentUser is null)
+        {
+            Console.WriteLine("You must be logged in to change your password.");
+            return;
+        }
         Console.WriteLine("\n--- Change Password ---");
         Console.Write("Enter Current Password: ");
         string oldPassword = AccountManager.GetMaskedPassword();
 
         if (
-            AccountManager.HashPassword(oldPassword, User.CurrentUser.Salt)
-            != User.CurrentUser.PasswordHash
+            AccountManager.HashPassword(oldPassword, AccountManager.CurrentUser.Salt)
+            != AccountManager.CurrentUser.PasswordHash
         )
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -135,9 +156,9 @@ public class SettingsMenu
         Console.Write("Enter New Password: ");
         string newPassword = AccountManager.GetMaskedPassword();
 
-        User.CurrentUser.PasswordHash = AccountManager.HashPassword(
+        AccountManager.CurrentUser.PasswordHash = AccountManager.HashPassword(
             newPassword,
-            User.CurrentUser.Salt
+            AccountManager.CurrentUser.Salt
         );
 
         string fileName = "users.json";
@@ -148,10 +169,12 @@ public class SettingsMenu
                 string json = File.ReadAllText(fileName);
                 var users = JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
 
-                var userToUpdate = users.FirstOrDefault(u => u.UserID == User.CurrentUser.UserID);
+                var userToUpdate = users.FirstOrDefault(u =>
+                    u.UserID == AccountManager.CurrentUser.UserID
+                );
                 if (userToUpdate != null)
                 {
-                    userToUpdate.PasswordHash = User.CurrentUser.PasswordHash;
+                    userToUpdate.PasswordHash = AccountManager.CurrentUser.PasswordHash;
                     File.WriteAllText(
                         fileName,
                         JsonSerializer.Serialize(

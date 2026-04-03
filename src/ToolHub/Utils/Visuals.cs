@@ -1,4 +1,5 @@
 using ToolHub.Models;
+using ToolHub.Services;
 
 namespace ToolHub.Utils;
 
@@ -7,7 +8,7 @@ public static class Visuals
     public static void DisplayLogo()
     {
         Console.Clear();
-        Console.ForegroundColor = User.CurrentUser?.FavoriteColor ?? ConsoleColor.Green;
+        Console.ForegroundColor = AccountManager.CurrentUser?.FavoriteColor ?? ConsoleColor.Green;
         Console.WriteLine(
             @"
   ______            __   __  __      __    

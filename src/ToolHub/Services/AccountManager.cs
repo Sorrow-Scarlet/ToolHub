@@ -8,6 +8,8 @@ namespace ToolHub.Services;
 
 public class AccountManager
 {
+    public static User? CurrentUser { get; set; } = null;
+
     public static string GenerateSalt()
     {
         byte[] saltBytes = new byte[32];
@@ -145,7 +147,7 @@ public class AccountManager
             if (yesOrNo2 == "y" || yesOrNo2 == "yes")
             {
                 Visuals.SimulateLoading("Entering Tool Hub...");
-                User.CurrentUser = newUser;
+                CurrentUser = newUser;
                 MainMenu.ShowMenu();
             }
             else

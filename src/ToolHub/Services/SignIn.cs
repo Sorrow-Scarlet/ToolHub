@@ -39,7 +39,7 @@ public class SignIn
 
                 if (user.PasswordHash == hashedInput)
                 {
-                    User.CurrentUser = user;
+                    AccountManager.CurrentUser = user;
                     Console.WriteLine($"\nLogin successful! Welcome back, {user.Username}.");
                     Visuals.SimulateLoading("Entering Tool Hub...");
                     Thread.Sleep(1000);

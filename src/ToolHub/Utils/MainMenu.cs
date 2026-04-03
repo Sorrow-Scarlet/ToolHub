@@ -64,7 +64,7 @@ public class MainMenu
                         break;
 
                     case "5":
-                        User.CurrentUser = null;
+                        AccountManager.CurrentUser = null;
                         Visuals.SimulateLoading("Logging out...");
                         Thread.Sleep(1000);
                         return;
