@@ -7,11 +7,7 @@ bin
 /.vscode
 /.idea
 
+.csproj.user
+
 # MACOS
 .DS_Store
-
-# Haxe
-.haxelib/
-.haxelsp/recording/
-dump/
-build
