@@ -71,7 +71,8 @@ public class AccountManager
             // A common usage in console applications
             Console.WriteLine("Create Your Account? Y/n?");
             // use `nullableInput ?? "default string"` for null safety
-            yesOrNo1 = (Console.ReadLine() ?? "y").ToLower();
+            string? input = Console.ReadLine();
+            yesOrNo1 = string.IsNullOrWhiteSpace(input) ? "y" : input.ToLower();
 
             if (yesOrNo1 == "y" || yesOrNo1 == "yes" || yesOrNo1 == "n" || yesOrNo1 == "no")
             {
@@ -86,9 +87,9 @@ public class AccountManager
         if (yesOrNo1 == "y" || yesOrNo1 == "yes")
         {
             Console.WriteLine("Please enter your new username:");
-            string userName = Console.ReadLine() ?? "Default Name";
+            string userName = Console.ReadLine() ?? "";
             Console.WriteLine("Please enter your email:");
-            string userEmail = Console.ReadLine() ?? "Default Email";
+            string userEmail = Console.ReadLine() ?? "";
             Console.WriteLine("Please enter your password:");
             string userPassword = GetMaskedPassword();
 
@@ -132,11 +133,14 @@ public class AccountManager
 
             string yesOrNo2 = "";
             bool isValidInput2 = false;
+
             while (!isValidInput2)
             {
                 Console.WriteLine("\nWould you like to enter the Tool Hub? Y/n?");
                 // use `nullableInput ?? "default string"` for null safety
-                yesOrNo2 = (Console.ReadLine() ?? "y").ToLower();
+                // we can use `input` again because previous `input` is out of scope
+                string? input = Console.ReadLine();
+                yesOrNo2 = string.IsNullOrWhiteSpace(input) ? "y" : input.ToLower();
 
                 if (yesOrNo2 == "y" || yesOrNo2 == "yes" || yesOrNo2 == "n" || yesOrNo2 == "no")
                     isValidInput2 = true;
